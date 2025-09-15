@@ -8,10 +8,11 @@ import { Problem } from '@/types';
 interface CodeEditorProps {
   problem: Problem;
   onCodeChange: (code: string) => void;
+  onLanguageChange: (language: string) => void;
   code: string;
 }
 
-export default function CodeEditor({ problem, onCodeChange, code }: CodeEditorProps) {
+export default function CodeEditor({ problem, onCodeChange, onLanguageChange, code }: CodeEditorProps) {
   const [language, setLanguage] = useState('javascript');
   const [theme] = useState('vs-dark');
 
@@ -47,6 +48,7 @@ export default function CodeEditor({ problem, onCodeChange, code }: CodeEditorPr
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
+    onLanguageChange(newLanguage);
     onCodeChange(getLanguageStub(newLanguage));
   };
 
@@ -55,7 +57,7 @@ export default function CodeEditor({ problem, onCodeChange, code }: CodeEditorPr
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-900">
+    <div className="h-full flex flex-col bg-[#1a1a1a]">
       {/* Editor Header */}
       <CodeEditorHeader
         language={language}

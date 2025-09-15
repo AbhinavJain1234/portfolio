@@ -17,31 +17,30 @@ export default function CodeEditorHeader({
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   const languages = [
-    { value: 'javascript', label: 'JavaScript', icon: '🟨' },
-    { value: 'python', label: 'Python', icon: '🐍' },
-    { value: 'java', label: 'Java', icon: '☕' },
-    { value: 'cpp', label: 'C++', icon: '⚡' },
-    { value: 'typescript', label: 'TypeScript', icon: '🔷' }
+    { value: 'javascript', label: 'JavaScript' },
+    { value: 'python', label: 'Python' },
+    { value: 'java', label: 'Java' },
+    { value: 'cpp', label: 'C++' },
+    { value: 'typescript', label: 'TypeScript' }
   ];
 
   const currentLanguage = languages.find(lang => lang.value === language);
 
   return (
-    <div className="flex items-center justify-between bg-gray-800 border-b border-gray-700 px-4 py-2">
+    <div className="flex items-center justify-between bg-[#262626] border-b border-[#404040] px-4 py-2">
       <div className="flex items-center space-x-4">
         {/* Language Selector */}
         <div className="relative">
           <button
             onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
-            className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded text-sm"
+            className="flex items-center space-x-2 bg-[#404040] hover:bg-[#4d4d4d] text-white px-3 py-2 rounded text-sm"
           >
-            <span>{currentLanguage?.icon}</span>
             <span>{currentLanguage?.label}</span>
             <ChevronDown className="w-4 h-4" />
           </button>
           
           {isLanguageDropdownOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 rounded-md shadow-lg z-10 min-w-[150px]">
+            <div className="absolute top-full left-0 mt-1 bg-[#404040] border border-[#595959] rounded-md shadow-lg z-10 min-w-[150px]">
               {languages.map((lang) => (
                 <button
                   key={lang.value}
@@ -49,9 +48,8 @@ export default function CodeEditorHeader({
                     onLanguageChange(lang.value);
                     setIsLanguageDropdownOpen(false);
                   }}
-                  className="flex items-center space-x-2 w-full px-3 py-2 text-left text-white hover:bg-gray-600 first:rounded-t-md last:rounded-b-md"
+                  className="flex items-center space-x-2 w-full px-3 py-2 text-left text-white hover:bg-[#4d4d4d] first:rounded-t-md last:rounded-b-md"
                 >
-                  <span>{lang.icon}</span>
                   <span>{lang.label}</span>
                 </button>
               ))}
@@ -60,11 +58,11 @@ export default function CodeEditorHeader({
         </div>
 
         {/* Auto-complete toggle */}
-        <label className="flex items-center space-x-2 text-sm text-gray-300">
+        <label className="flex items-center space-x-2 text-sm text-[#b3b3b3]">
           <input
             type="checkbox"
             defaultChecked
-            className="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 rounded focus:ring-green-500"
+            className="w-4 h-4 text-[#2cbb5d] bg-[#404040] border-[#595959] rounded focus:ring-[#2cbb5d]"
           />
           <span>Auto-complete</span>
         </label>
@@ -74,7 +72,7 @@ export default function CodeEditorHeader({
         {/* Reset Code */}
         <button
           onClick={onReset}
-          className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded"
+          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
           title="Reset to default code"
         >
           <RotateCcw className="w-4 h-4" />
@@ -82,7 +80,7 @@ export default function CodeEditorHeader({
 
         {/* Copy Code */}
         <button
-          className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded"
+          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
           title="Copy code"
         >
           <Copy className="w-4 h-4" />
@@ -90,7 +88,7 @@ export default function CodeEditorHeader({
 
         {/* Settings */}
         <button
-          className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded"
+          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
           title="Editor settings"
         >
           <Settings className="w-4 h-4" />
@@ -98,7 +96,7 @@ export default function CodeEditorHeader({
 
         {/* Fullscreen */}
         <button
-          className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded"
+          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
           title="Fullscreen"
         >
           <Maximize2 className="w-4 h-4" />
