@@ -1,20 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, Settings, Copy, RotateCcw, Maximize2 } from 'lucide-react';
+import { ChevronDown, Copy, RotateCcw, Maximize2, Minimize2, Code } from 'lucide-react';
 
 interface CodeEditorHeaderProps {
   language: string;
   onLanguageChange: (language: string) => void;
   onReset: () => void;
+  code?: string;
 }
 
 export default function CodeEditorHeader({ 
   language, 
   onLanguageChange, 
-  onReset 
+  onReset,
+  code = ''
 }: CodeEditorHeaderProps) {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const languages = [
     { value: 'javascript', label: 'JavaScript' },
@@ -25,6 +28,27 @@ export default function CodeEditorHeader({
   ];
 
   const currentLanguage = languages.find(lang => lang.value === language);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      // Could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy code:', err);
+    }
+  };
+
+  const handleFormat = () => {
+    // Basic code formatting - in a real implementation this would use language-specific formatters
+    console.log('Formatting code...');
+    // Could implement prettier/language-specific formatting here
+  };
+
+  const handleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+    // In a real implementation, this would trigger fullscreen mode for the editor panel
+    console.log('Toggling fullscreen:', !isFullscreen);
+  };
 
   return (
     <div className="flex items-center justify-between bg-[#262626] border-b border-[#404040] px-4 py-2">
@@ -80,26 +104,29 @@ export default function CodeEditorHeader({
 
         {/* Copy Code */}
         <button
+          onClick={handleCopy}
           className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
           title="Copy code"
         >
           <Copy className="w-4 h-4" />
         </button>
 
-        {/* Settings */}
+        {/* Refactor/Format Code */}
         <button
+          onClick={handleFormat}
           className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
-          title="Editor settings"
+          title="Format code"
         >
-          <Settings className="w-4 h-4" />
+          <Code className="w-4 h-4" />
         </button>
 
-        {/* Fullscreen */}
+        {/* Fullscreen Toggle */}
         <button
+          onClick={handleFullscreen}
           className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
-          title="Fullscreen"
+          title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
         >
-          <Maximize2 className="w-4 h-4" />
+          {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
         </button>
       </div>
     </div>

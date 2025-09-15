@@ -57,16 +57,19 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#1a1a1a]">
+    <div className="h-full flex flex-col bg-[#1a1a1a] overflow-hidden">
       {/* Editor Header */}
-      <CodeEditorHeader
-        language={language}
-        onLanguageChange={handleLanguageChange}
-        onReset={handleReset}
-      />
+      <div className="flex-shrink-0">
+        <CodeEditorHeader
+          language={language}
+          onLanguageChange={handleLanguageChange}
+          onReset={handleReset}
+          code={code}
+        />
+      </div>
 
       {/* Monaco Editor */}
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         <Editor
           height="100%"
           defaultLanguage={language}
@@ -100,19 +103,22 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
             quickSuggestions: true,
             snippetSuggestions: 'inline',
             formatOnPaste: true,
-            formatOnType: true
+            formatOnType: true,
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
+            overviewRulerBorder: false
           }}
           loading={
-            <div className="flex items-center justify-center h-full bg-gray-900">
-              <div className="text-gray-400">Loading Monaco Editor...</div>
+            <div className="flex items-center justify-center h-full bg-[#1a1a1a]">
+              <div className="text-[#8c8c8c]">Loading Monaco Editor...</div>
             </div>
           }
         />
       </div>
 
       {/* Editor Footer */}
-      <div className="bg-gray-800 border-t border-gray-700 px-4 py-2">
-        <div className="flex items-center justify-between text-xs text-gray-400">
+      <div className="flex-shrink-0 bg-[#262626] border-t border-[#404040] px-4 py-2">
+        <div className="flex items-center justify-between text-xs text-[#8c8c8c]">
           <div className="flex items-center space-x-4">
             <span>Ln 1, Col 1</span>
             <span>Spaces: 2</span>
@@ -120,7 +126,7 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
           </div>
           <div className="flex items-center space-x-2">
             <span>{language.toUpperCase()}</span>
-            <div className="w-2 h-2 bg-green-400 rounded-full" title="Connected"></div>
+            <div className="w-2 h-2 bg-[#2cbb5d] rounded-full" title="Connected"></div>
           </div>
         </div>
       </div>

@@ -33,112 +33,121 @@ export default function Home() {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     try {
-      let func: any;
-      
-      // Handle different languages
-      if (language === 'javascript' || language === 'typescript') {
-        // JavaScript/TypeScript execution
-        func = new Function('return ' + code)();
-      } else {
-        // For other languages, simulate execution with predefined results
-        // In a real application, this would call a backend service
-        const testCases: TestCase[] = [];
-        let allPassed = true;
-
-        for (const [functionCall, expectedOutput] of Object.entries(currentProblem.expectedOutputs)) {
-          // Simulate different language behavior
-          const passed = Math.random() > 0.3; // 70% chance of passing for demo
-          allPassed = allPassed && passed;
-          
-          testCases.push({
-            input: functionCall,
-            expectedOutput,
-            actualOutput: passed ? expectedOutput : 'Runtime Error',
-            passed
-          });
-        }
-
-        setExecutionResult({
-          success: allPassed,
-          output: allPassed ? 'Execution completed' : 'Some test cases failed',
-          testCases
-        });
-        
-        setIsRunning(false);
-        return;
-      }
-      
       const testCases: TestCase[] = [];
       let allPassed = true;
 
-      // Generate test cases based on expected outputs
-      for (const [functionCall, expectedOutput] of Object.entries(currentProblem.expectedOutputs)) {
+      // Define test cases based on the current problem
+      const problemTestCases = getTestCasesForProblem(currentProblem.id);
+
+      if (language === 'javascript' || language === 'typescript') {
+        // JavaScript/TypeScript execution
         try {
-          let actualOutput: unknown;
-          
-          // Parse function call and execute
-          if (functionCall.includes('(')) {
-            const args = functionCall.match(/\((.*?)\)/)?.[1];
+          // Create a safe execution environment
+          const wrappedCode = `
+            ${code}
             
-            if (args && args !== '') {
-              // Parse arguments (simple string arguments for now)
-              const parsedArgs = args.split(',').map(arg => {
-                const trimmed = arg.trim();
-                if (trimmed.startsWith("'") || trimmed.startsWith('"')) {
-                  return trimmed.slice(1, -1);
-                }
-                // Try to parse as number
-                const num = Number(trimmed);
-                if (!isNaN(num)) {
-                  return num;
-                }
-                return trimmed;
-              });
-              actualOutput = func(...parsedArgs);
+            // Return the function for testing
+            if (typeof ${currentProblem.functionName} !== 'undefined') {
+              ${currentProblem.functionName};
             } else {
-              actualOutput = func();
+              throw new Error('Function ${currentProblem.functionName} not found');
             }
-          } else {
-            actualOutput = func();
-          }
-
-          const passed = JSON.stringify(actualOutput) === JSON.stringify(expectedOutput);
+          `;
           
-          testCases.push({
-            input: functionCall,
-            expectedOutput,
-            actualOutput,
-            passed
-          });
-
-          if (!passed) allPassed = false;
+          const func = new Function('return ' + wrappedCode)();
+          
+          // Run test cases
+          for (const testCase of problemTestCases) {
+            try {
+              const actualOutput = func.apply(null, testCase.input);
+              const passed = JSON.stringify(actualOutput) === JSON.stringify(testCase.expectedOutput);
+              allPassed = allPassed && passed;
+              
+              testCases.push({
+                input: JSON.stringify(testCase.input),
+                expectedOutput: JSON.stringify(testCase.expectedOutput),
+                actualOutput: JSON.stringify(actualOutput),
+                passed
+              });
+            } catch (error) {
+              allPassed = false;
+              testCases.push({
+                input: JSON.stringify(testCase.input),
+                expectedOutput: JSON.stringify(testCase.expectedOutput),
+                actualOutput: `Runtime Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                passed: false
+              });
+            }
+          }
         } catch (error) {
+          allPassed = false;
           testCases.push({
-            input: functionCall,
-            expectedOutput,
-            actualOutput: `Error: ${error}`,
+            input: 'Code compilation',
+            expectedOutput: 'Success',
+            actualOutput: `Compilation Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
             passed: false
           });
-          allPassed = false;
+        }
+      } else {
+        // For other languages, simulate execution
+        for (const testCase of problemTestCases) {
+          // Simulate execution with reasonable success rate
+          const passed = Math.random() > 0.2; // 80% chance of passing for demo
+          allPassed = allPassed && passed;
+          
+          testCases.push({
+            input: JSON.stringify(testCase.input),
+            expectedOutput: JSON.stringify(testCase.expectedOutput),
+            actualOutput: passed ? JSON.stringify(testCase.expectedOutput) : 'Runtime Error',
+            passed
+          });
         }
       }
 
       setExecutionResult({
         success: allPassed,
-        output: 'Execution completed',
+        output: allPassed ? `✅ All test cases passed!` : `❌ ${testCases.filter(tc => !tc.passed).length} test case(s) failed`,
         testCases
       });
-
+      
     } catch (error) {
       setExecutionResult({
         success: false,
-        output: null,
-        error: `Syntax Error: ${error}`,
+        output: `❌ Execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         testCases: []
       });
     }
 
     setIsRunning(false);
+  };
+
+  const getTestCasesForProblem = (problemId: number) => {
+    // Define test cases for each problem
+    switch (problemId) {
+      case 1: // Two Sum
+        return [
+          { input: [[2, 7, 11, 15], 9], expectedOutput: [0, 1] },
+          { input: [[3, 2, 4], 6], expectedOutput: [1, 2] },
+          { input: [[3, 3], 6], expectedOutput: [0, 1] }
+        ];
+      case 2: // Add Two Numbers
+        return [
+          { input: [[2, 4, 3], [5, 6, 4]], expectedOutput: [7, 0, 8] },
+          { input: [[0], [0]], expectedOutput: [0] },
+          { input: [[9, 9, 9, 9, 9, 9, 9], [9, 9, 9, 9]], expectedOutput: [8, 9, 9, 9, 0, 0, 0, 1] }
+        ];
+      case 3: // Longest Substring
+        return [
+          { input: ["abcabcbb"], expectedOutput: 3 },
+          { input: ["bbbbb"], expectedOutput: 1 },
+          { input: ["pwwkew"], expectedOutput: 3 }
+        ];
+      default:
+        return [
+          { input: ["test"], expectedOutput: "test" },
+          { input: [123], expectedOutput: 123 }
+        ];
+    }
   };
 
   const handleRun = () => {

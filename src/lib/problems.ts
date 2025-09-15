@@ -4,10 +4,11 @@ export const problems: Problem[] = [
   {
     id: 1,
     title: "Who is Abhinav Jain?",
+    functionName: "getPersonalInfo",
     description: `You are given a query about a software engineer. Return the most relevant information about Abhinav Jain.
 
 **About:**
-Abhinav is a passionate Computer Science student at Chitkara University with expertise in full-stack development, AI/ML, and competitive programming. He has demonstrated leadership through founding startups and contributing to open-source projects.
+Abhinav is a passionate Computer Science student at Thapar University with expertise in full-stack development, AI/ML, and competitive programming. He has demonstrated leadership through founding startups and contributing to open-source projects.
 
 **Background:**
 - Strong foundation in algorithms and data structures
@@ -31,7 +32,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
       },
       {
         input: 'getPersonalInfo("education")',
-        output: '"Computer Science - Chitkara University (Top 10%)"',
+        output: '"Computer Science - Thapar University (Top 10%)"',
         explanation: "Academic background with performance indicator"
       }
     ],
@@ -47,7 +48,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
     
     const info = {
         summary: "Passionate CS student with startup leadership experience and strong technical skills",
-        education: "Computer Science - Chitkara University (Top 10%)",
+        education: "Computer Science - Thapar University (Top 10%)",
         philosophy: "Code is poetry written in logic",
         contact: "Available for internships and collaboration"
     };
@@ -56,7 +57,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
 }`,
     expectedOutputs: {
       'getPersonalInfo("summary")': "Passionate CS student with startup leadership experience and strong technical skills",
-      'getPersonalInfo("education")': "Computer Science - Chitkara University (Top 10%)",
+      'getPersonalInfo("education")': "Computer Science - Thapar University (Top 10%)",
       'getPersonalInfo("philosophy")': "Code is poetry written in logic"
     },
     difficulty: "Easy",
@@ -65,6 +66,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
   {
     id: 2,
     title: "Technical Skills Assessment",
+    functionName: "getSkills",
     description: `Return Abhinav's technical skills categorized by proficiency and domain.
 
 **Programming Languages:** Java, C/C++, Python, JavaScript/TypeScript, Dart
@@ -112,6 +114,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
   {
     id: 3,
     title: "Professional Experience",
+    functionName: "getExperience",
     description: `Implement a function that returns Abhinav's professional experience and leadership roles.
 
 **Experience Highlights:**
@@ -155,6 +158,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
   {
     id: 4,
     title: "Project Portfolio",
+    functionName: "getProjects",
     description: `Implement a function that showcases Abhinav's key projects with their technologies and impact.
 
 **Featured Projects:**
@@ -200,6 +204,7 @@ Abhinav is a passionate Computer Science student at Chitkara University with exp
   {
     id: 5,
     title: "Achievements & Recognition",
+    functionName: "getAchievements",
     description: `Return Abhinav's academic achievements, scholarships, and competition results.
 
 **Key Achievements:**

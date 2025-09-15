@@ -6,6 +6,7 @@ export interface Problem {
   examples: Example[];
   links: Link[];
   functionStub: string;
+  functionName: string;
   expectedOutputs: Record<string, unknown>;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   tags: string[];
