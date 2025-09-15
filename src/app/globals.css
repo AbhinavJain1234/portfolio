@@ -5,13 +5,6 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -23,4 +16,62 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom animations for fun fact popup */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-12deg);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Light theme styles */
+.light-theme {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+
+.light-theme body {
+  background: #f5f5f5;
+  color: #333333;
+}
+
+.light-theme nav {
+  background: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+
+.light-theme [class*="bg-[#1a1a1a]"] {
+  background: #ffffff !important;
+}
+
+.light-theme [class*="bg-[#262626]"] {
+  background: #f0f0f0 !important;
+}
+
+.light-theme [class*="bg-[#404040]"] {
+  background: #e0e0e0 !important;
+}
+
+.light-theme [class*="text-white"] {
+  color: #333333 !important;
+}
+
+.light-theme [class*="text-[#8c8c8c]"] {
+  color: #666666 !important;
+}
+
+.light-theme [class*="border-[#262626]"] {
+  border-color: #e5e5e5 !important;
+}
+
+.light-theme [class*="border-[#404040]"] {
+  border-color: #d0d0d0 !important;
 }

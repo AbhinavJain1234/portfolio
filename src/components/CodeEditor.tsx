@@ -15,6 +15,7 @@ interface CodeEditorProps {
 export default function CodeEditor({ problem, onCodeChange, onLanguageChange, code }: CodeEditorProps) {
   const [language, setLanguage] = useState('javascript');
   const [theme] = useState('vs-dark');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     // Set initial code if empty
@@ -56,8 +57,14 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
     onCodeChange(getLanguageStub(language));
   };
 
+  const handleFullscreenToggle = (fullscreen: boolean) => {
+    setIsFullscreen(fullscreen);
+    // In a real implementation, this would trigger actual fullscreen mode
+    console.log('Fullscreen toggled:', fullscreen);
+  };
+
   return (
-    <div className="h-full flex flex-col bg-[#1a1a1a] overflow-hidden">
+    <div className={`h-full flex flex-col bg-[#1a1a1a] overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
       {/* Editor Header */}
       <div className="flex-shrink-0">
         <CodeEditorHeader
@@ -65,6 +72,8 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
           onLanguageChange={handleLanguageChange}
           onReset={handleReset}
           code={code}
+          onCodeChange={onCodeChange}
+          onFullscreenToggle={handleFullscreenToggle}
         />
       </div>
 

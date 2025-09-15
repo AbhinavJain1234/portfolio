@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Shuffle, Play, Send, Search, Bell, Flame, Settings, Notebook, ChevronDown } from 'lucide-react';
@@ -24,23 +24,42 @@ export default function TopNav({
   onShuffle,
   onNotepadToggle
 }: TopNavProps) {
+  const pathname = usePathname();
   const [streak] = useState(42); // Mock GitHub streak
   const [showFunFact, setShowFunFact] = useState(false);
   const [currentFunFact, setCurrentFunFact] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [factGenre, setFactGenre] = useState('tech');
-  const pathname = usePathname();
+  const settingsRef = useRef<HTMLDivElement>(null);
 
-  // Determine which tabs to show based on current page
-  const isAboutPage = pathname.startsWith('/about') || 
-                     pathname.startsWith('/experience') || 
-                     pathname.startsWith('/skills') || 
-                     pathname.startsWith('/projects') || 
-                     pathname.startsWith('/achievements') || 
-                     pathname.startsWith('/education');
-  
-  const isProblemPage = pathname === '/' || pathname.startsWith('/problem');
+  // Determine which navigation to show
+  const isProblemPage = pathname === '/';
+  const isAboutPage = pathname?.startsWith('/about') || pathname === '/experience' || pathname === '/skills' || pathname === '/projects' || pathname === '/achievements' || pathname === '/education';
+
+  // Close settings dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setShowSettings(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Apply theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light-theme');
+    } else {
+      root.classList.remove('light-theme');
+    }
+  }, [theme]);
 
   const handleShuffle = () => {
     const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
@@ -66,9 +85,8 @@ export default function TopNav({
 
   return (
     <>
-      <nav className="bg-[#1a1a1a] border-b border-[#262626] px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left Section */}
+      <nav className="bg-[#1a1a1a] border-b border-[#262626] px-4 py-3 relative">
+        <div className="flex items-center justify-between">{/* Left Section */}
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-[#ffa116] rounded flex items-center justify-center text-white font-bold text-sm">
@@ -115,20 +133,25 @@ export default function TopNav({
             </nav>
             
             <div className="flex items-center space-x-2 ml-6">
-              <button
-                onClick={goToPrevious}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded"
-                title="Previous Problem"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={goToNext}
-                className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#262626] rounded"
-                title="Next Problem"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
+              {/* Only show problem navigation controls when not on about page */}
+              {!isAboutPage && (
+                <>
+                  <button
+                    onClick={goToPrevious}
+                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded"
+                    title="Previous Problem"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={goToNext}
+                    className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#262626] rounded"
+                    title="Next Problem"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
               <button
                 onClick={handleShuffle}
                 className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#262626] rounded"
@@ -139,23 +162,24 @@ export default function TopNav({
             </div>
           </div>
 
-          {/* Center Section */}
-          <div className="hidden md:flex items-center space-x-2">
-            <button
-              onClick={onRun}
-              className="p-2 bg-[#2cbb5d] text-white rounded hover:bg-[#2a9950] transition-colors"
-              title="Run Code"
-            >
-              <Play className="w-5 h-5" />
-            </button>
-            <button
-              onClick={onSubmit}
-              className="px-4 py-2 text-sm bg-[#2cbb5d] text-white rounded hover:bg-[#2a9950] flex items-center space-x-2 font-medium"
-            >
-              <Send className="w-4 h-4" />
-              <span>Submit</span>
-            </button>
-          </div>
+          {/* Center Section - Positioned to align with description end */}
+          {!isAboutPage && (
+            <div className="hidden md:flex items-center space-x-2 absolute left-[40%] transform -translate-x-1/2">
+              <button
+                onClick={onRun}
+                className="p-2 bg-[#404040] text-white rounded hover:bg-[#4d4d4d] transition-colors"
+                title="Run Code"
+              >
+                <Play className="w-5 h-5" />
+              </button>
+              <button
+                onClick={onSubmit}
+                className="px-4 py-2 text-sm bg-[#404040] text-[#2cbb5d] rounded hover:bg-[#4d4d4d] flex items-center space-x-2 font-medium"
+              >
+                <span>Submit</span>
+              </button>
+            </div>
+          )}
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
@@ -181,7 +205,7 @@ export default function TopNav({
               <span className="font-semibold text-sm">{streak}</span>
             </div>
 
-            <div className="relative">
+            <div className="relative" ref={settingsRef}>
               <button 
                 onClick={() => setShowSettings(!showSettings)}
                 className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#262626] rounded"
@@ -243,9 +267,25 @@ export default function TopNav({
 
       {/* Fun Fact Popup */}
       {showFunFact && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-[#ffa116] text-[#1a1a1a] border border-[#ffb84d] rounded-lg p-4 shadow-xl z-50 max-w-md">
-          <div className="text-sm font-medium">
-            💡 <strong>Fun Fact:</strong> {currentFunFact}
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 max-w-md animate-pulse">
+          <div className="bg-gradient-to-r from-[#ff6b6b] via-[#ffa116] to-[#4ecdc4] p-0.5 rounded-xl shadow-2xl">
+            <div className="bg-[#1a1a1a] rounded-lg p-5 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 animate-shimmer"></div>
+              <div className="relative flex items-start space-x-3">
+                <div className="text-2xl animate-bounce">💡</div>
+                <div>
+                  <div className="text-[#ffa116] font-bold text-sm mb-1 tracking-wide uppercase">
+                    Did You Know?
+                  </div>
+                  <div className="text-white text-sm leading-relaxed">
+                    {currentFunFact}
+                  </div>
+                </div>
+              </div>
+              <div className="absolute top-2 right-2">
+                <div className="w-2 h-2 bg-[#4ecdc4] rounded-full animate-ping"></div>
+              </div>
+            </div>
           </div>
         </div>
       )}

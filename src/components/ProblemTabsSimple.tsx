@@ -8,7 +8,7 @@ interface ProblemTabsProps {
   problem: Problem;
 }
 
-export default function ProblemTabs({ problem }: ProblemTabsProps) {
+export default function ProblemTabsSimple({ problem }: ProblemTabsProps) {
   const [activeTab, setActiveTab] = useState('description');
   const [stars, setStars] = useState(0);
   const [isStarred, setIsStarred] = useState(false);

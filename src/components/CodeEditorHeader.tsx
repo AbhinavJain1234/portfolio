@@ -1,23 +1,29 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, Copy, RotateCcw, Maximize2, Minimize2, Code } from 'lucide-react';
+import { ChevronDown, Copy, RotateCcw, Maximize2, Minimize2, Code, Check } from 'lucide-react';
 
 interface CodeEditorHeaderProps {
   language: string;
   onLanguageChange: (language: string) => void;
   onReset: () => void;
   code?: string;
+  onCodeChange?: (code: string) => void;
+  onFullscreenToggle?: (isFullscreen: boolean) => void;
 }
 
 export default function CodeEditorHeader({ 
   language, 
   onLanguageChange, 
   onReset,
-  code = ''
+  code = '',
+  onCodeChange,
+  onFullscreenToggle
 }: CodeEditorHeaderProps) {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [formatted, setFormatted] = useState(false);
 
   const languages = [
     { value: 'javascript', label: 'JavaScript' },
@@ -32,22 +38,87 @@ export default function CodeEditorHeader({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
-      // Could add a toast notification here
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy code:', err);
     }
   };
 
   const handleFormat = () => {
-    // Basic code formatting - in a real implementation this would use language-specific formatters
-    console.log('Formatting code...');
-    // Could implement prettier/language-specific formatting here
+    // Basic code formatting implementation
+    if (!onCodeChange) return;
+    
+    let formattedCode = code;
+    
+    // Basic formatting based on language
+    switch (language) {
+      case 'javascript':
+      case 'typescript':
+        formattedCode = formatJavaScript(code);
+        break;
+      case 'python':
+        formattedCode = formatPython(code);
+        break;
+      case 'java':
+      case 'cpp':
+        formattedCode = formatCStyle(code);
+        break;
+      default:
+        formattedCode = code.split('\n').map(line => line.trim()).join('\n');
+    }
+    
+    onCodeChange(formattedCode);
+    setFormatted(true);
+    setTimeout(() => setFormatted(false), 2000);
+  };
+
+  const formatJavaScript = (code: string) => {
+    return code
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (trimmed.includes('{') || trimmed.includes('}')) {
+          return trimmed;
+        }
+        return '  ' + trimmed;
+      })
+      .join('\n');
+  };
+
+  const formatPython = (code: string) => {
+    return code
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('def ') || trimmed.startsWith('class ') || trimmed.startsWith('if ') || trimmed.startsWith('for ') || trimmed.startsWith('while ')) {
+          return trimmed;
+        }
+        if (trimmed && !trimmed.startsWith('#')) {
+          return '    ' + trimmed;
+        }
+        return trimmed;
+      })
+      .join('\n');
+  };
+
+  const formatCStyle = (code: string) => {
+    return code
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (trimmed.includes('{') || trimmed.includes('}')) {
+          return trimmed;
+        }
+        return '    ' + trimmed;
+      })
+      .join('\n');
   };
 
   const handleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-    // In a real implementation, this would trigger fullscreen mode for the editor panel
-    console.log('Toggling fullscreen:', !isFullscreen);
+    const newFullscreenState = !isFullscreen;
+    setIsFullscreen(newFullscreenState);
+    onFullscreenToggle?.(newFullscreenState);
   };
 
   return (
@@ -96,7 +167,7 @@ export default function CodeEditorHeader({
         {/* Reset Code */}
         <button
           onClick={onReset}
-          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
+          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded transition-all duration-200 active:scale-95 active:bg-[#4d4d4d]"
           title="Reset to default code"
         >
           <RotateCcw className="w-4 h-4" />
@@ -105,17 +176,25 @@ export default function CodeEditorHeader({
         {/* Copy Code */}
         <button
           onClick={handleCopy}
-          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
-          title="Copy code"
+          className={`p-2 rounded transition-all duration-200 active:scale-95 ${
+            copied 
+              ? 'text-[#2cbb5d] bg-[#2cbb5d]/20' 
+              : 'text-[#8c8c8c] hover:text-white hover:bg-[#404040] active:bg-[#4d4d4d]'
+          }`}
+          title={copied ? "Copied!" : "Copy code"}
         >
-          <Copy className="w-4 h-4" />
+          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
         </button>
 
         {/* Refactor/Format Code */}
         <button
           onClick={handleFormat}
-          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
-          title="Format code"
+          className={`p-2 rounded transition-all duration-200 active:scale-95 ${
+            formatted 
+              ? 'text-[#2cbb5d] bg-[#2cbb5d]/20' 
+              : 'text-[#8c8c8c] hover:text-white hover:bg-[#404040] active:bg-[#4d4d4d]'
+          }`}
+          title={formatted ? "Code formatted!" : "Format code"}
         >
           <Code className="w-4 h-4" />
         </button>
@@ -123,7 +202,11 @@ export default function CodeEditorHeader({
         {/* Fullscreen Toggle */}
         <button
           onClick={handleFullscreen}
-          className="p-2 text-[#8c8c8c] hover:text-white hover:bg-[#404040] rounded"
+          className={`p-2 rounded transition-all duration-200 active:scale-95 ${
+            isFullscreen 
+              ? 'text-[#ffa116] bg-[#ffa116]/20' 
+              : 'text-[#8c8c8c] hover:text-white hover:bg-[#404040] active:bg-[#4d4d4d]'
+          }`}
           title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
         >
           {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
