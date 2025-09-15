@@ -93,7 +93,7 @@ export default function TopNav({
                 🔥
               </div>
               <Link href="/" className="font-bold text-white text-xl hover:text-[#ffa116] transition-colors">
-                Portfolio
+                Daily Question
               </Link>
             </div>
             
