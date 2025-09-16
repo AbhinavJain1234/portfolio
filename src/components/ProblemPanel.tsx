@@ -1,7 +1,7 @@
 'use client';
 
 import { Problem } from '@/types';
-import { ExternalLink, Star, Clock } from 'lucide-react';
+import { ExternalLink, Star } from 'lucide-react';
 
 interface ProblemPanelProps {
   problem: Problem;

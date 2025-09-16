@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, FileText, Trash2, Edit, Save, ArrowLeft } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import TopNav from '@/components/TopNav';
 import { problems } from '@/lib/problems';
@@ -27,7 +27,7 @@ export default function NotesPage() {
     const savedNotes = localStorage.getItem('leetcode-notes');
     if (savedNotes) {
       try {
-        const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
+        const parsedNotes = JSON.parse(savedNotes).map((note: Note) => ({
           ...note,
           createdAt: new Date(note.createdAt),
           updatedAt: new Date(note.updatedAt)
@@ -100,7 +100,6 @@ export default function NotesPage() {
         onRun={() => {}}
         onSubmit={() => {}}
         onShuffle={() => {}}
-        onNotepadToggle={() => {}}
       />
       
       <div className="flex-1 flex overflow-hidden">

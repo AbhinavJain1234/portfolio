@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Shuffle, Play, Send, Search, Bell, Flame, Settings, Notebook, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Shuffle, Play, Search, Bell, Flame, Settings, Notebook } from 'lucide-react';
 import { problems, funFacts } from '@/lib/problems';
 import { Problem } from '@/types';
 
@@ -13,7 +13,6 @@ interface TopNavProps {
   onRun: () => void;
   onSubmit: () => void;
   onShuffle: () => void;
-  onNotepadToggle: () => void;
 }
 
 export default function TopNav({ 
@@ -21,8 +20,7 @@ export default function TopNav({
   onProblemChange, 
   onRun, 
   onSubmit,
-  onShuffle,
-  onNotepadToggle
+  onShuffle
 }: TopNavProps) {
   const pathname = usePathname();
   const [streak] = useState(42); // Mock GitHub streak

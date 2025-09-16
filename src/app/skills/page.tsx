@@ -10,7 +10,6 @@ export default function SkillsPage() {
   const handleRun = () => {};
   const handleSubmit = () => {};
   const handleShuffle = () => {};
-  const handleNotepadToggle = () => {};
 
   return (
     <div className="h-screen flex flex-col bg-[#1a1a1a]">
@@ -20,7 +19,6 @@ export default function SkillsPage() {
         onRun={handleRun}
         onSubmit={handleSubmit}
         onShuffle={handleShuffle}
-        onNotepadToggle={handleNotepadToggle}
       />
       
       <div className="flex-1 overflow-y-auto p-8">

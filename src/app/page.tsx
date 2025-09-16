@@ -6,17 +6,15 @@ import TopNav from '@/components/TopNav';
 import ProblemTabsSimple from '@/components/ProblemTabsSimple';
 import CodeEditor from '@/components/CodeEditor';
 import ResultsPanel from '@/components/ResultsPanel';
-import Notepad from '@/components/Notepad';
 import { problems } from '@/lib/problems';
-import { Problem, ExecutionResult, TestCase } from '@/types';
+import { ExecutionResult, TestCase } from '@/types';
 
 export default function Home() {
   const [currentProblemId, setCurrentProblemId] = useState(1);
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('javascript');
-  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [isNotepadOpen, setIsNotepadOpen] = useState(false);
+  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
 
   const currentProblem = problems.find(p => p.id === currentProblemId) || problems[0];
 
@@ -59,7 +57,7 @@ export default function Home() {
           // Run test cases
           for (const testCase of problemTestCases) {
             try {
-              const actualOutput = func.apply(null, testCase.input);
+              const actualOutput = func(...testCase.input);
               const passed = JSON.stringify(actualOutput) === JSON.stringify(testCase.expectedOutput);
               allPassed = allPassed && passed;
               
@@ -163,10 +161,6 @@ export default function Home() {
     console.log('Shuffled fun fact!');
   };
 
-  const handleNotepadToggle = () => {
-    setIsNotepadOpen(!isNotepadOpen);
-  };
-
   return (
     <div className="h-screen flex flex-col bg-[#1a1a1a]">
       <TopNav
@@ -175,7 +169,6 @@ export default function Home() {
         onRun={handleRun}
         onSubmit={handleSubmit}
         onShuffle={handleShuffle}
-        onNotepadToggle={handleNotepadToggle}
       />
       
       <div className="flex-1 overflow-hidden">
@@ -215,12 +208,6 @@ export default function Home() {
           </Panel>
         </PanelGroup>
       </div>
-
-      {/* Notepad */}
-      <Notepad
-        isOpen={isNotepadOpen}
-        onClose={() => setIsNotepadOpen(false)}
-      />
     </div>
   );
 }

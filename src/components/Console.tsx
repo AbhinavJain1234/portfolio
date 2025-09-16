@@ -18,11 +18,6 @@ export default function Console({ isOpen, onClose, onRun }: ConsoleProps) {
     setLogs([]);
   };
 
-  const addLog = (type: 'log' | 'error' | 'warn', message: string) => {
-    const timestamp = new Date().toLocaleTimeString();
-    setLogs(prev => [...prev, { type, message, timestamp }]);
-  };
-
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 z-50" style={{ height: '300px' }}>
       {/* Console Header */}

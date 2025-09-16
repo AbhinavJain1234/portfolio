@@ -19,7 +19,6 @@ interface NotepadProps {
 export default function Notepad({ isOpen, onClose }: NotepadProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
   const [editingTitle, setEditingTitle] = useState<string | null>(null);
 
   // Load notes from localStorage on component mount
@@ -27,7 +26,7 @@ export default function Notepad({ isOpen, onClose }: NotepadProps) {
     const savedNotes = localStorage.getItem('leetcode-notes');
     if (savedNotes) {
       try {
-        const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
+        const parsedNotes = JSON.parse(savedNotes).map((note: Note) => ({
           ...note,
           createdAt: new Date(note.createdAt),
           updatedAt: new Date(note.updatedAt)
@@ -54,7 +53,6 @@ export default function Notepad({ isOpen, onClose }: NotepadProps) {
     };
     setNotes(prev => [newNote, ...prev]);
     setSelectedNoteId(newNote.id);
-    setIsCreating(false);
     setEditingTitle(newNote.id);
   };
 

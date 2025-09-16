@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Save, Edit, Plus, Trash2, Upload } from 'lucide-react';
+import Link from 'next/link';
+import { Save, Edit, Plus, Trash2 } from 'lucide-react';
 
 interface ProfileData {
   name: string;
@@ -152,9 +153,9 @@ export default function AdminPage() {
               <Save className="w-4 h-4" />
               <span>Save All Changes</span>
             </button>
-            <a href="/" className="text-[#8c8c8c] hover:text-white text-sm">
+            <Link href="/" className="text-[#8c8c8c] hover:text-white text-sm">
               ← Back to Portfolio
-            </a>
+            </Link>
           </div>
         </div>
       </div>

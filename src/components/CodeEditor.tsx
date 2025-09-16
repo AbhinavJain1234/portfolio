@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import CodeEditorHeader from './CodeEditorHeader';
 import { Problem } from '@/types';
@@ -17,18 +17,7 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
   const [theme] = useState('vs-dark');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  useEffect(() => {
-    // Set initial code if empty
-    if (!code) {
-      onCodeChange(getLanguageStub(language));
-    }
-  }, [problem.id, code, onCodeChange, language]);
-
-  const handleEditorChange = (value: string | undefined) => {
-    onCodeChange(value || '');
-  };
-
-  const getLanguageStub = (lang: string) => {
+  const getLanguageStub = useCallback((lang: string) => {
     switch (lang) {
       case 'python':
         return problem.functionStub
@@ -45,6 +34,17 @@ export default function CodeEditor({ problem, onCodeChange, onLanguageChange, co
       default:
         return problem.functionStub;
     }
+  }, [problem.functionStub]);
+
+  useEffect(() => {
+    // Set initial code if empty
+    if (!code) {
+      onCodeChange(getLanguageStub(language));
+    }
+  }, [problem.id, code, onCodeChange, language, getLanguageStub]);
+
+  const handleEditorChange = (value: string | undefined) => {
+    onCodeChange(value || '');
   };
 
   const handleLanguageChange = (newLanguage: string) => {

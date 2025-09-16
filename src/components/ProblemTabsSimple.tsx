@@ -226,7 +226,7 @@ export default function ProblemTabsSimple({ problem }: ProblemTabsProps) {
                   </div>
                 </div>
                 <p className="text-[#b3b3b3] mb-3">
-                  Great problem! Here's my approach using a sliding window technique...
+                  Great problem! Here&apos;s my approach using a sliding window technique...
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-[#8c8c8c]">
                   <button className="hover:text-white">👍 15</button>
@@ -245,7 +245,7 @@ export default function ProblemTabsSimple({ problem }: ProblemTabsProps) {
                   </div>
                 </div>
                 <p className="text-[#b3b3b3] mb-3">
-                  Can someone explain why the greedy approach doesn't work here?
+                  Can someone explain why the greedy approach doesn&apos;t work here?
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-[#8c8c8c]">
                   <button className="hover:text-white">👍 8</button>
